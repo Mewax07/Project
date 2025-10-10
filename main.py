@@ -39,7 +39,7 @@ espace_avant_apres_texte = int((longueur_totale - 10) / 2)
 ligne_titre = "[]" + "=" * (espace_avant_apres - 3) + "[MENU]" + "=" * (espace_avant_apres - 3) + "[]"
 
 # Liste des status par défaut du menu
-status = ["J"]
+status = ["J", "O"]
 
 menu_start_y = 100
 
@@ -63,6 +63,7 @@ def afficher_menu():
         "||" + " " * espace_avant_apres_texte + center_line("format : \"nombre:lettre\"") + " " * espace_avant_apres_texte + "||",
         "||" + " " * (espace_avant_apres * 2) + "||",
         "||" + " " * espace_avant_apres_texte + center_line(f"1. Ciel: [J]: Jour / [N]: Nuit ({status[0]})") + " " * espace_avant_apres_texte + "||",
+        "||" + " " * espace_avant_apres_texte + center_line(f"2. Musique: [O]: Oui / [N]: Non ({status[1]})") + " " * espace_avant_apres_texte + "||",
         "||" + " " * (espace_avant_apres * 2) + "||",
         "[]" + "=" * (espace_avant_apres * 2) + "[]"
     ]
@@ -92,24 +93,34 @@ def key_press(key):
 
     if key == "Return":
         cmd = user_input.strip().upper()
-        if cmd == "1:J":
-            print("Commande : Jour")
+        if cmd == "CLEAR":
             status[0] = "J"
             user_input = ""
             afficher_menu()
-        elif cmd == "1:N":
-            print("Commande : Nuit")
-            status[0] = "N"
-            user_input = ""
-            afficher_menu()
-        elif cmd == "CLEAR":
-            status["J"]
-            afficher_menu()
+
         elif cmd == "EXIT":
             exit(0)
+
         elif cmd == "START":
             user_input = ""
             setup()
+
+        elif ":" in cmd:
+            try:
+                num, res = cmd.split(":", 1)
+                num = int(num)
+                res = res.strip().upper()
+
+                if 1 <= num <= len(status) and len(res) == 1:
+                    status[num - 1] = res
+                    print(f"Commande : {cmd} -> status[{num - 1}] = '{res}'")
+                    user_input = ""
+                    afficher_menu()
+                else:
+                    print("Commande invalide.")
+            except ValueError:
+                print("Format de commande invalide. Utilisez le format number:result.")
+
         return
 
     elif key == "BackSpace":
