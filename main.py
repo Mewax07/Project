@@ -203,6 +203,7 @@ def dessiner_bloc(y_base, color):
     t.goto(-longueur / 2, y_base)
     t.goto(-longueur / 2, -largeur / 2)
     t.end_fill()
+    t.up()
 
     screen.update()
 
@@ -239,6 +240,7 @@ def dessiner_colline(y_base, largeur, hauteur_max, nb_points=15, color="#158A13"
     t.goto(largeur / 2, y_base)
     t.goto(-largeur / 2, y_base)
     t.end_fill()
+    t.up()
 
     screen.update()
 
