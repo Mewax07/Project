@@ -1,5 +1,6 @@
 import turtle
 import random
+import math
 
 # Cette partie a été réalisée par Coletta Tymeo
 screen = turtle.Screen()
@@ -23,7 +24,6 @@ largeur = screen.window_height()
 longueur = screen.window_width()
 
 # Cette partie a été réalisée par Thiebaut Antoine
-
 def move_to(t, x, y):
     t.up()
     t.goto(x, y)
@@ -46,7 +46,6 @@ menu_start_y = 100
 user_input = ""
 
 def center_line(text, width=36):
-    """Centre le texte dans un espace de longueur fixe."""
     text = text.strip()
     if len(text) > width:
         text = text[:width]
@@ -168,7 +167,7 @@ def interpolate_color(c1, c2, t):
     b = int(c1[2] + (c2[2] - c1[2]) * t)
     return (r/255, g/255, b/255)
 
-def draw_gradient(c1, c2, steps=200):
+def dessiner_gradient(c1, c2, steps=200):
     screen.tracer(False)
     hauteur = largeur / steps
     t = draw_t
@@ -244,6 +243,128 @@ def dessiner_colline(y_base, largeur, hauteur_max, nb_points=15, color="#158A13"
 
     screen.update()
 
+# (Partie Tyméo)
+def rayon(longueur, largeur):
+    t = draw_t
+    t.color("yellow")
+    t.fillcolor("yellow")
+    t.down()
+    t.begin_fill()
+    for _ in range(2):
+        t.forward(longueur)
+        t.right(90)
+        t.forward(largeur)
+        t.right(90)
+    t.end_fill()
+    t.up()
+
+def nuage(longueur=10, angle=120):
+    t = draw_t
+    t.color("black")
+    t.fillcolor("white")
+    t.down()
+    t.begin_fill()
+    for _ in range(4):
+        t.circle(longueur, angle)
+        t.right(80)
+    for _ in range(2):
+        t.circle(longueur, angle)
+        t.right(120)
+    for _ in range(4):
+        t.circle(longueur, angle)
+        t.right(80)
+    for _ in range(3):
+        t.circle(longueur, angle)
+        t.right(110)
+    t.end_fill()
+    t.up()
+
+def nenuphar():
+    t = draw_t
+    t.color("black")
+    t.fillcolor("green")
+    t.down()
+    t.begin_fill()
+    t.circle(10, 300)
+    t.left(90)
+    t.forward(10)
+    t.right(90)
+    t.end_fill()
+    t.up()
+
+def dessiner_soleil(positionY):
+    t = draw_t
+    t.up()
+    t.goto(0, positionY)
+    t.down()
+    t.color("yellow")
+    t.fillcolor("yellow")
+    t.begin_fill()
+    t.circle(60)
+    t.end_fill()
+    # Rayons
+    for i in range(8):
+        t.up()
+        t.goto(0, positionY + 60)
+        t.setheading(i * 45)
+        t.forward(60)
+        t.down()
+        rayon(80, 10)
+    t.up()
+
+def dessiner_nuages(nb):
+    t = draw_t
+    for _ in range(nb):
+        x = random.randint(-int(longueur / 2), int(longueur / 2))
+        y = random.randint(160, 220)
+        t.up()
+        t.goto(x, y)
+        nuage()
+import math
+import random
+
+def dessiner_lac(cx=0, cy=-200, rx=160, ry=70, points=120):
+    t = draw_t
+    t.up()
+    angle0 = 0
+    x0 = cx + rx * math.cos(math.radians(angle0))
+    y0 = cy + ry * math.sin(math.radians(angle0))
+    t.goto(x0, y0)
+    t.setheading(0)
+    t.fillcolor("#4FB3FF")
+    t.down()
+    t.begin_fill()
+
+    for i in range(1, points + 1):
+        angle = (i / points) * 360.0
+        vrx = rx + random.uniform(-8, 8)
+        vry = ry + random.uniform(-4, 4)
+        x = cx + vrx * math.cos(math.radians(angle))
+        y = cy + vry * math.sin(math.radians(angle))
+        t.goto(x, y)
+
+    t.end_fill()
+    t.up()
+    screen.update()
+
+
+def dessiner_nenuphars(nb, cx=0, cy=-200, rx=140, ry=60):
+    t = draw_t
+    for _ in range(nb):
+        theta = random.random() * 2 * math.pi
+        u = random.random()
+        r = math.sqrt(u)
+        x = cx + r * rx * math.cos(theta)
+        y = cy + r * ry * math.sin(theta)
+
+        t.up()
+        t.goto(x, y)
+        t.setheading(0)
+        nenuphar()
+
+    screen.update()
+
+# (Partie Antoine)
 def setup():
     clear_menu()
     draw_t.clear()
@@ -264,21 +385,34 @@ def setup():
     etape_1()
 
 def etape_1():
-    draw_gradient(ciel_1_color, ciel_2_color, steps=200)
+    dessiner_gradient(ciel_1_color, ciel_2_color, steps=200)
     etape_2()
 
 # TODO: Étape: Montagne
 def etape_2():
-    hauteur_max = random.randint(150, 250)
-    dessiner_colline(-30, longueur, hauteur_max, 20, montagne_color)
-    dessiner_bloc(-30, montagne_color)
+    dessiner_soleil(200)
+    dessiner_nuages(nb=random.randint(7, 9))
     etape_3()
 
 # TODO: Étape: Colline
 def etape_3():
+    hauteur_max = random.randint(150, 250)
+    dessiner_colline(-30, longueur, hauteur_max, 20, montagne_color)
+    dessiner_bloc(-30, montagne_color)
+    etape_4()
+
+# TODO: Étape: Ciel (soleil + nuage)
+def etape_4():
     y_base = -150
     hauteur_max = random.randint(50, 150)
     dessiner_colline(y_base, longueur, hauteur_max, 10, colline_color)
     dessiner_bloc(y_base, colline_color)
+    etape_5()
+
+# TODO: Étape: Nenupahre + Étant
+def etape_5():
+    dessiner_lac(cx=0, cy=-200, rx=160, ry=70, points=160)
+    dessiner_nenuphars(nb=random.randint(5, 7), cx=0, cy=-200, rx=140, ry=60)
+
 
 turtle.done()
