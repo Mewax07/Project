@@ -23,7 +23,7 @@ screen.tracer(0)
 largeur = screen.window_height()
 longueur = screen.window_width()
 
-# Cette partie a été réalisée par Thiebaut Antoine
+# Cette partie a été réalisée par Thiebaut Antoine et Coletta Tyméo
 def move_to(t, x, y):
     t.up()
     t.goto(x, y)
@@ -45,12 +45,14 @@ menu_start_y = 100
 
 user_input = ""
 
+# Centrer une ligne
 def center_line(text, width=36):
     text = text.strip()
     if len(text) > width:
         text = text[:width]
     return text.center(width, " ")
 
+# Afficher le menu
 def afficher_menu():
     global user_input
     menu_t.clear()
@@ -77,6 +79,7 @@ def afficher_menu():
 
     screen.update()
 
+# Effacer le menu
 def clear_menu():
     menu_t.clear()
     screen.update()
@@ -84,6 +87,7 @@ def clear_menu():
 # ensemble des caractères autorisés
 ALLOWED = set("0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ:")
 
+# Touche du clavier presser
 def key_press(key):
     global user_input
 
@@ -139,6 +143,7 @@ def key_press(key):
 
     return
 
+# Ecouter les touches du clavier et executer les bonnes actions
 screen.listen()
 screen.onkey(lambda: key_press("Return"), "Return")
 screen.onkey(lambda: key_press("BackSpace"), "BackSpace")
@@ -159,6 +164,7 @@ for ch in chars:
 
 afficher_menu()
 
+# Code trouver en ligne pour calculer le dégarder entre 2 couleurs
 def interpolate_color(c1, c2, t):
     c1 = (int(c1[1:3], 16), int(c1[3:5], 16), int(c1[5:7], 16))
     c2 = (int(c2[1:3], 16), int(c2[3:5], 16), int(c2[5:7], 16))
@@ -167,6 +173,7 @@ def interpolate_color(c1, c2, t):
     b = int(c1[2] + (c2[2] - c1[2]) * t)
     return (r/255, g/255, b/255)
 
+# Dessiner un dégrader
 def dessiner_gradient(c1, c2, steps=200):
     screen.tracer(False)
     hauteur = largeur / steps
@@ -244,6 +251,7 @@ def dessiner_colline(y_base, largeur, hauteur_max, nb_points=15, color="#158A13"
     screen.update()
 
 # (Partie Tyméo)
+# Dessin des rayons de soleil
 def rayon(longueur, largeur):
     t = draw_t
     t.color("yellow")
@@ -258,6 +266,7 @@ def rayon(longueur, largeur):
     t.end_fill()
     t.up()
 
+# Dessin des nuages
 def nuage(longueur=10, angle=120):
     t = draw_t
     t.color("black")
@@ -279,6 +288,7 @@ def nuage(longueur=10, angle=120):
     t.end_fill()
     t.up()
 
+# Dessin des nenuphare
 def nenuphar():
     t = draw_t
     t.color("black")
@@ -292,6 +302,7 @@ def nenuphar():
     t.end_fill()
     t.up()
 
+# Dessin du soleil
 def dessiner_soleil(positionY):
     t = draw_t
     t.up()
@@ -312,6 +323,7 @@ def dessiner_soleil(positionY):
         rayon(80, 10)
     t.up()
 
+# Dessin de l'ensemble des nuages
 def dessiner_nuages(nb):
     t = draw_t
     for _ in range(nb):
@@ -320,9 +332,8 @@ def dessiner_nuages(nb):
         t.up()
         t.goto(x, y)
         nuage()
-import math
-import random
 
+# Dessin du lac
 def dessiner_lac(cx=0, cy=-200, rx=160, ry=70, points=120):
     t = draw_t
     t.up()
@@ -347,7 +358,7 @@ def dessiner_lac(cx=0, cy=-200, rx=160, ry=70, points=120):
     t.up()
     screen.update()
 
-
+# Dessin de l'ensemble des nenuphares
 def dessiner_nenuphars(nb, cx=0, cy=-200, rx=140, ry=60):
     t = draw_t
     for _ in range(nb):
@@ -365,6 +376,7 @@ def dessiner_nenuphars(nb, cx=0, cy=-200, rx=140, ry=60):
     screen.update()
 
 # (Partie Antoine)
+# Code qui configure les variables
 def setup():
     clear_menu()
     draw_t.clear()
@@ -384,6 +396,7 @@ def setup():
 
     etape_1()
 
+# TODO: Étape: Dessiner le ciel
 def etape_1():
     dessiner_gradient(ciel_1_color, ciel_2_color, steps=200)
     etape_2()
@@ -413,6 +426,5 @@ def etape_4():
 def etape_5():
     dessiner_lac(cx=0, cy=-200, rx=160, ry=70, points=160)
     dessiner_nenuphars(nb=random.randint(5, 7), cx=0, cy=-200, rx=140, ry=60)
-
 
 turtle.done()
